@@ -25,54 +25,48 @@ router.post('/message', async (req, res) => {
 
 // GET route to retrieve chat history between two users
 router.get('/history', async (req, res) => {
-  const { userID, otherUserID } = req.query;
-  
+  const { roomID } = req.query;
+  console.log(roomID);
   try {
-    const messages = await Chat.find({
-      $or: [
-        { senderID: userID, recipientID: otherUserID },
-        { senderID: otherUserID, recipientID: userID }
-      ]
-    }).sort('time');
-    
+    const messages = await Chat.find({ roomID }).sort('time');
     res.status(200).json(messages);
   } catch (error) {
     res.status(500).json({ error: 'Error retrieving chat history' });
   }
 });
+
+
 router.get('/activeChats', async (req, res) => {
-  const userID = req.query.userID; // Assuming userID is passed as a query parameter
+  const userID = req.query.userID;
 
   try {
     // Fetch all the chats where the connected user is a participant
     const chats = await Chat.find({
       $or: [{ senderID: userID }, { recepientID: userID }]
-    }).sort({ 'time': -1 }); // Sort by time in descending order to get the last messages
+    }).sort({ 'timestamp': -1 }); 
 
-    // Transform the chats into the desired format
-    const activeChats = [];
-    const seenChats = new Set();
-    chats.forEach(chat => {
-      const otherUser = chat.senderID === userID ? chat.recepientID : chat.senderID;
-      if (!seenChats.has(otherUser)) {
-        activeChats.push({
-          chatID: chat.roomID,
+    // Group chats by the other user and keep only the most recent chat
+    const activeChats = {};
+    for (const chat of chats) {
+      const otherUser = String(chat.senderID) === String(userID) ? chat.recepientID : chat.senderID;
+
+      if (!(String(otherUser) in activeChats)) {
+        // TODO: Fetch user details from User model if necessary
+        activeChats[String(otherUser)] = {
           otherUserID: otherUser,
-          otherUserName: "Example Name", // You'll have to fetch this from your User model
+          otherUserName: chat.author, // You'll have to fetch this from your User model
           lastMessage: {
             content: chat.content,
             time: chat.time
           }
-        });
-        seenChats.add(otherUser);
+        };
       }
-    });
+    }
 
-    res.json(activeChats);
+    res.json(Object.values(activeChats));
   } catch (err) {
     console.error(err);
     res.status(500).send('Server error');
   }
 });
-
 module.exports = router;

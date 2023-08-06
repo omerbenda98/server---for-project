@@ -29,6 +29,10 @@ const ChatSchema = new mongoose.Schema({
     type: String,
     required:true
   },
+  timestamp: {
+    type: Number,
+    default: () => Date.now(), // Return a timestamp when a new document is created
+  },
 });
 
 module.exports = mongoose.model('Chat', ChatSchema);

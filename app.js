@@ -28,6 +28,7 @@ io.on('connection', (socket) => {
   // When a user joins a room
   socket.on('joinRoom', (roomId) => {
     socket.join(roomId);
+    console.log(roomId);
   });
 
   // When a message is sent
