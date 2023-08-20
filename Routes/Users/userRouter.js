@@ -11,6 +11,7 @@ const router = require("express").Router();
 const User = require("./userModel");
 const auth = require("../../middlewares/authorization");
 const chalk = require("chalk");
+const normalizeUser = require("../../model/users/NormalizeUser");
 
 router.post("/register", async (req, res) => {
   const { error } = validateRegistration(req.body);
@@ -24,7 +25,8 @@ router.post("/register", async (req, res) => {
     console.log(chalk.redBright("Registration Error: User already registered"));
     return res.status(400).send("User already registered.");
   }
-  user = new User({ ...req.body });
+  let userData = normalizeUser(req.body);
+  user = new User({ ...userData });
   // user = new User(
   //   _.pick(req.body, ["name", "email", "password", "biz", "cards"])
   // );

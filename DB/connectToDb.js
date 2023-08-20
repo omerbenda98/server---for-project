@@ -1,8 +1,11 @@
 const mongoose = require("mongoose");
 const chalk = require("chalk");
+const config = require("config");
+
+console.log("con str", config.get("dbConfig.url"));
 
 mongoose
-  .connect("mongodb://127.0.0.1/business_card_app", {
+  .connect(config.get("dbConfig.url"), {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })

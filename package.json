@@ -4,14 +4,14 @@
   "description": "Business card app for businesses",
   "main": "app.js",
   "scripts": {
-    "start": "node .",
-    "dev": "nodemon ."
+    "start": "cross-env NODE_ENV=production node .",
+    "dev": "cross-env NODE_ENV=development nodemon ."
   },
   "keywords": [
     "Business card",
     "businesses app"
   ],
-  "author": "David Yakin",
+  "author": "Omer Ben David",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -27,6 +27,7 @@
     "socket.io": "^4.7.1"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "nodemon": "^2.0.15"
   }
 }

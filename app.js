@@ -2,16 +2,20 @@ require("./DB/connectToDb");
 // require("./primeryData/primeryCards")();
 const express = require("express");
 const app = express();
-const http = require('http');
-const socketIo = require('socket.io');
+const http = require("http");
+const socketIo = require("socket.io");
 const usersRouter = require("./Routes/Users/userRouter");
 const cardsRouter = require("./Routes/Cards/cardsRouter");
 const chatRouter = require("./Routes/Chats/chatRouter");
 const chalk = require("chalk");
 const morgan = require("morgan");
 const cors = require("cors");
-const Chat = require('./Routes/Chats/chatModel');
+const Chat = require("./Routes/Chats/chatModel");
+const {
+  validateChat,
+} = require("./Routes/Chats/chatValidations/chatValidation");
 const { Server } = require("socket.io");
+const normalizeChat = require("./model/chats/NormalizeChat");
 
 // Create an HTTP server
 const server = http.createServer(app);
@@ -24,26 +28,38 @@ const io = new Server(server, {
   },
 });
 
-io.on('connection', (socket) => {
+io.on("connection", (socket) => {
   // When a user joins a room
-  socket.on('joinRoom', (roomId) => {
+  socket.on("joinRoom", (roomId) => {
     socket.join(roomId);
-    console.log(roomId);
   });
 
   // When a message is sent
-  socket.on('send_message', async (data) => {
+  socket.on("send_message", async (data) => {
     try {
-      const message = new Chat(data);
+      // Validate incoming data first
+      const { error } = validateChat(data);
+      console.log(data);
+      if (error) {
+        console.error("Validation error:", error.details[0].message);
+        return res.status(400).send(error.details[0].message); // return early if validation fails
+      }
+      // Create new chat and save it only if validation passes
+      const normalizedMessage = normalizeChat(
+        data,
+        data.senderID,
+        data.recepientID
+      );
+      const message = new Chat(normalizedMessage);
       await message.save();
-      io.to(data.roomID).emit('receive_message', message);
+      io.to(data.roomID).emit("receive_message", message);
     } catch (error) {
       console.error("Error sending message:", error);
     }
   });
 
   // When a user leaves a room
-  socket.on('leaveRoom', (roomId) => {
+  socket.on("leaveRoom", (roomId) => {
     socket.leave(roomId);
   });
 });

@@ -3,6 +3,7 @@ const config = require("config");
 
 function generateAuthToken(user) {
   const token = jwt.sign(
+    // { _id: user._id, biz: user.biz, isAdmin: user.isAdmin },
     { _id: user._id, biz: user.biz, isAdmin: user.isAdmin },
     config.get("jwtKey")
   );

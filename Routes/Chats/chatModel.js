@@ -18,7 +18,9 @@ const ChatSchema = new mongoose.Schema({
   },
   content: {
     type: String,
-    required: true
+    required: true,
+    minlength: 1,
+    maxlength: 1024,
   },
   time: {
     type: String,
@@ -27,7 +29,9 @@ const ChatSchema = new mongoose.Schema({
   },
   author:{
     type: String,
-    required:true
+    required:true,
+    minlength: 2,
+    maxlength: 256,
   },
   timestamp: {
     type: Number,
