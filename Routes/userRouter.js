@@ -1,17 +1,14 @@
-const validateRegistration = require("./usersValidations/registraion");
-const validateEditUser = require("./usersValidations/editUser");
-const validateSignin = require("./usersValidations/signIn");
-const {
-  comparePassword,
-  generateHashPassword,
-} = require("../../services/bcrypt");
-const { generateAuthToken } = require("../../services/token");
+const validateRegistration = require("../validation/usersValidations/registraion");
+const validateEditUser = require("../validation/usersValidations/editUser");
+const validateSignin = require("../validation/usersValidations/signIn");
+const { comparePassword, generateHashPassword } = require("../services/bcrypt");
+const { generateAuthToken } = require("../services/token");
 const _ = require("lodash");
 const router = require("express").Router();
-const User = require("./userModel");
-const auth = require("../../middlewares/authorization");
+const User = require("../model/users/userModel");
+const auth = require("../middlewares/authorization");
 const chalk = require("chalk");
-const normalizeUser = require("../../model/users/NormalizeUser");
+const normalizeUser = require("../model/users/NormalizeUser");
 
 router.post("/register", async (req, res) => {
   const { error } = validateRegistration(req.body);

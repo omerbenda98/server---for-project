@@ -4,16 +4,14 @@ const express = require("express");
 const app = express();
 const http = require("http");
 const socketIo = require("socket.io");
-const usersRouter = require("./Routes/Users/userRouter");
-const cardsRouter = require("./Routes/Cards/cardsRouter");
-const chatRouter = require("./Routes/Chats/chatRouter");
+const usersRouter = require("./Routes/userRouter");
+const cardsRouter = require("./Routes/cardsRouter");
+const chatRouter = require("./Routes/chatRouter");
 const chalk = require("chalk");
 const morgan = require("morgan");
 const cors = require("cors");
-const Chat = require("./Routes/Chats/chatModel");
-const {
-  validateChat,
-} = require("./Routes/Chats/chatValidations/chatValidation");
+const Chat = require("./model/chats/chatModel");
+const { validateChat } = require("./validation/chatValidation");
 const { Server } = require("socket.io");
 const normalizeChat = require("./model/chats/NormalizeChat");
 
@@ -63,6 +61,8 @@ io.on("connection", (socket) => {
     socket.leave(roomId);
   });
 });
+
+app.use(express.static("public"));
 
 app.use(morgan(chalk.cyan(":method :url :status :response-time ms")));
 app.use(cors());

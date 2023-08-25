@@ -1,5 +1,5 @@
-const { Card } = require("../Routes/Cards/cardModel");
-const User = require("../Routes/Users/userModel");
+// const { Card } = require("../model/cards/cardModel");
+const User = require("../model/users/userModel");
 const chalk = require("chalk");
 const { generateHashPassword } = require("../services/bcrypt");
 

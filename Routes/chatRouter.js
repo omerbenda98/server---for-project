@@ -1,7 +1,7 @@
 const express = require("express");
-const Chat = require("./chatModel");
-const User = require("../Users/userModel");
-const normalizeChat = require("../../model/chats/NormalizeChat");
+const Chat = require("../model/chats/chatModel");
+const User = require("../model/users/userModel");
+const normalizeChat = require("../model/chats/NormalizeChat");
 
 const router = express.Router();
 

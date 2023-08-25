@@ -30,7 +30,6 @@ const CustomError = require("../utils/CostumeError");
 
 const permissionsMiddleware = (isBiz, isAdmin) => {
   return (req, res, next) => {
-    console.log(req.user);
     if (!req.user) {
       throw new CustomError("must provide userData");
     }

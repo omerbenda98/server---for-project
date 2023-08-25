@@ -1,12 +1,12 @@
-const { Card } = require("./cardModel");
+const Card = require("../model/cards/cardModel");
 const express = require("express");
-const auth = require("../../middlewares/authorization");
+const auth = require("../middlewares/authorization");
 const router = express.Router();
 const chalk = require("chalk");
-const { generateBizNum } = require("./services/generateBizNum");
-const { validateCard } = require("./cardValidation");
-const normalizeCard = require("../../model/cards/NormalizeCard");
-const permissionsMiddleware = require("../../middlewares/permissions");
+const { validateCard } = require("../validation/cardValidation");
+const normalizeCard = require("../model/cards/NormalizeCard");
+const permissionsMiddleware = require("../middlewares/permissions");
+// const cardsService = require("../model/cards/cardsService");
 
 /********** סעיף 7 **********/
 router.get("/cards", async (req, res) => {
@@ -35,7 +35,6 @@ router.get("/my-cards", auth, async (req, res) => {
 router.post("/", auth, permissionsMiddleware(true, false), async (req, res) => {
   try {
     const user = req.user;
-    console.log(user._id);
 
     if (!user.biz) {
       console.log(
@@ -52,8 +51,7 @@ router.post("/", auth, permissionsMiddleware(true, false), async (req, res) => {
       return res.status(400).send(error.details[0].message);
     }
     card = new Card(normalizeCard(req.body, user._id));
-
-    card = await card.save();
+    await card.save();
     return res.send(card);
   } catch (error) {
     console.log(chalk.redBright(error.message));

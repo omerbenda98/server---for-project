@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const minAllowEmpty = require("../../services/validatorAllowEmpty");
 
 const cardSchema = new mongoose.Schema({
   name: {
@@ -14,11 +13,10 @@ const cardSchema = new mongoose.Schema({
     minlength: 2,
     maxlength: 256,
   },
-    breed: {
+  breed: {
     type: String,
     maxlength: 256,
-    minlength:2,
-
+    minlength: 2,
   },
   description: {
     type: String,
@@ -75,4 +73,4 @@ const cardSchema = new mongoose.Schema({
 
 const Card = mongoose.model("card", cardSchema);
 
-exports.Card = Card;
+module.exports = Card;

@@ -1,6 +1,5 @@
 // NormalizeCard.js
 const normalizeCard = (card, userId) => {
-  console.log(userId);
   return {
     ...card,
     image: {
