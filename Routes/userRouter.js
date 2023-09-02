@@ -9,6 +9,7 @@ const User = require("../model/users/userModel");
 const auth = require("../middlewares/authorization");
 const chalk = require("chalk");
 const normalizeUser = require("../model/users/NormalizeUser");
+const validateObjectId = require("../validation/idValidation");
 
 router.post("/register", async (req, res) => {
   const { error } = validateRegistration(req.body);
@@ -59,7 +60,6 @@ router.post("/login", async (req, res) => {
 
 router.get("/getAllUsers", auth, async (req, res) => {
   try {
-    console.log(req.user);
     if (!req.user || !req.user.isAdmin) {
       throw "you need to be admin!";
     }
@@ -72,7 +72,7 @@ router.get("/getAllUsers", auth, async (req, res) => {
 
 router.get("/userInfo", auth, (req, res) => {
   let user = req.user;
-
+  console.log(req);
   User.findById(user._id)
     .select(["-password", "-createdAt", "-__v"])
     .then((user) => res.send(user))
@@ -86,9 +86,21 @@ router.put("/userInfo", auth, async (req, res) => {
       console.log(chalk.redBright(error.details[0].message));
       return res.status(400).send(error.details[0].message);
     }
-    await User.findByIdAndUpdate(req.user._id, req.body);
-    res.json({ msg: "Done" });
+    let updatedUserData = await User.findByIdAndUpdate(req.user._id, req.body, {
+      new: true,
+    });
+    // After updating the user's profile, generate a new token
+
+    const token = generateAuthToken(updatedUserData);
+    console.log(token);
+
+    // Send the new token to the client
+    res.send({
+      user: updatedUserData.toObject(),
+      token: { token },
+    });
   } catch (err) {
+    console.log(err);
     res.status(500).send(err);
   }
 });
@@ -113,6 +125,10 @@ router.put("/userInfo/:id", auth, async (req, res) => {
 router.delete("/deleteUser/:id", auth, async (req, res) => {
   try {
     console.log(req.user);
+    const { error } = validateObjectId(req.params.id);
+    if (error) {
+      return res.status(400).send(error.details[0].message);
+    }
     if (!req.user || !req.user.isAdmin) {
       throw "you need to be admin!";
     }

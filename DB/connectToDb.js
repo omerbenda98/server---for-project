@@ -13,3 +13,5 @@ mongoose
   .catch((error) =>
     console.log(chalk.redBright.bold(`could not connect to mongoDb: ${error}`))
   );
+
+module.exports = mongoose;

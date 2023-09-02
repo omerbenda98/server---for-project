@@ -1,4 +1,5 @@
 require("./DB/connectToDb");
+const initialData = require("./initialData/initialData");
 // require("./primeryData/primeryCards")();
 const express = require("express");
 const app = express();
@@ -14,6 +15,7 @@ const Chat = require("./model/chats/chatModel");
 const { validateChat } = require("./validation/chatValidation");
 const { Server } = require("socket.io");
 const normalizeChat = require("./model/chats/NormalizeChat");
+const multer = require("multer");
 
 // Create an HTTP server
 const server = http.createServer(app);
@@ -61,8 +63,26 @@ io.on("connection", (socket) => {
     socket.leave(roomId);
   });
 });
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "./uploads"); // Set the destination. Make sure this folder exists.
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname); // Set the filename with the current date to avoid name collisions
+  },
+});
+const upload = multer({ storage: storage });
 
+app.post("/api/upload", upload.single("profilePic"), (req, res) => {
+  if (req.file) {
+    res.json({ imageUrl: `uploads/${req.file.filename}` });
+  } else {
+    res.status(400).json({ error: "No file uploaded" });
+  }
+});
+initialData();
 app.use(express.static("public"));
+app.use("/uploads", express.static("uploads"));
 
 app.use(morgan(chalk.cyan(":method :url :status :response-time ms")));
 app.use(cors());

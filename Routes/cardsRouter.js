@@ -6,6 +6,7 @@ const chalk = require("chalk");
 const { validateCard } = require("../validation/cardValidation");
 const normalizeCard = require("../model/cards/NormalizeCard");
 const permissionsMiddleware = require("../middlewares/permissions");
+const validateObjectId = require("../validation/idValidation");
 // const cardsService = require("../model/cards/cardsService");
 
 /********** סעיף 7 **********/
@@ -18,11 +19,11 @@ router.get("/cards", async (req, res) => {
     return res.status(500).send(error.message);
   }
 });
-
-/********** סעיף 9 **********/
 router.get("/my-cards", auth, async (req, res) => {
   try {
+    console.log(req.user);
     let user = req.user;
+
     if (!user.biz) return res.status(403).json("Un authorize user!");
     const cards = await Card.find({ user_id: user._id });
     return res.send(cards);
@@ -31,6 +32,19 @@ router.get("/my-cards", auth, async (req, res) => {
     return res.status(500).send(error.message);
   }
 });
+router.get("/:id", async (req, res) => {
+  try {
+    const { error } = validateObjectId(req.params.id);
+    if (error) {
+      return res.status(400).send(error.details[0].message);
+    }
+    const cardFromDB = await Card.findById(req.params.id);
+    res.json(cardFromDB);
+  } catch (err) {
+    res.status(400).json(err);
+  }
+});
+/********** סעיף 9 **********/
 
 router.post("/", auth, permissionsMiddleware(true, false), async (req, res) => {
   try {
@@ -50,7 +64,9 @@ router.post("/", auth, permissionsMiddleware(true, false), async (req, res) => {
       console.log(chalk.redBright(error.details[0].message));
       return res.status(400).send(error.details[0].message);
     }
+    console.log(req.body);
     card = new Card(normalizeCard(req.body, user._id));
+    console.log(card);
     await card.save();
     return res.send(card);
   } catch (error) {
@@ -78,7 +94,7 @@ router.put("/:id", auth, async (req, res) => {
       return res.status(400).send(errorMessage);
     }
 
-    normalizedCard = normalizeCard(card);
+    let normalizedCard = normalizeCard(card);
 
     const filter = {
       _id: req.params.id,

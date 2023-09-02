@@ -10,7 +10,7 @@ const cardSchema = new mongoose.Schema({
   age: {
     type: String,
     required: true,
-    minlength: 2,
+    minlength: 1,
     maxlength: 256,
   },
   breed: {

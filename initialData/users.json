@@ -1,0 +1,41 @@
+[
+  {
+    "firstName": "David",
+    "lastName": "Cohen",
+    "phone": "1234567890",
+    "email": "david@gmail.com",
+    "password": "Aa123456!",
+    "country": "USA",
+    "city": "NY",
+    "street": "123 Street",
+    "houseNumber": "45A",
+    "biz": false,
+    "isAdmin": true
+  },
+  {
+    "firstName": "Ronoa",
+    "lastName": "Zoro",
+    "phone": "1234567890",
+    "email": "zoro@gmail.com",
+    "password": "Aa123456!",
+    "country": "USA",
+    "city": "NY",
+    "street": "123 Street",
+    "houseNumber": "45A",
+    "biz": false,
+    "isAdmin": false
+  },
+  {
+    "firstName": "John",
+    "lastName": "Doe",
+    "phone": "1234567890",
+    "email": "john@gmail.com",
+    "password": "Aa123456!",
+    "country": "USA",
+    "city": "NY",
+    "street": "123 Street",
+    "houseNumber": "45A",
+    "biz": true,
+    "isAdmin": false
+  }
+]
