@@ -72,7 +72,6 @@ router.get("/getAllUsers", auth, async (req, res) => {
 
 router.get("/userInfo", auth, (req, res) => {
   let user = req.user;
-  console.log(req);
   User.findById(user._id)
     .select(["-password", "-createdAt", "-__v"])
     .then((user) => res.send(user))
@@ -92,7 +91,6 @@ router.put("/userInfo", auth, async (req, res) => {
     // After updating the user's profile, generate a new token
 
     const token = generateAuthToken(updatedUserData);
-    console.log(token);
 
     // Send the new token to the client
     res.send({
