@@ -51,15 +51,13 @@ const cardSchema = new mongoose.Schema({
     maxlength: 256,
   },
 
-  image: {
-    url: {
-      type: String,
-      required: true,
-      minlength: 6,
-      maxlength: 1024,
-    },
-    alt: { type: String, required: true, minlength: 6, maxlength: 256 },
+  imageUrl: {
+    type: String,
+    required: true,
+
+    maxlength: 1024,
   },
+  // imageAlt: { type: String, minlength: 6, maxlength: 256 },
 
   createdAt: {
     type: Date,

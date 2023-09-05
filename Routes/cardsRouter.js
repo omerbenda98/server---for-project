@@ -21,7 +21,6 @@ router.get("/cards", async (req, res) => {
 });
 router.get("/my-cards", auth, async (req, res) => {
   try {
-    console.log(req.user);
     let user = req.user;
 
     if (!user.biz) return res.status(403).json("Un authorize user!");
@@ -64,9 +63,9 @@ router.post("/", auth, permissionsMiddleware(true, false), async (req, res) => {
       console.log(chalk.redBright(error.details[0].message));
       return res.status(400).send(error.details[0].message);
     }
-    console.log(req.body);
+
     card = new Card(normalizeCard(req.body, user._id));
-    console.log(card);
+
     await card.save();
     return res.send(card);
   } catch (error) {
@@ -78,7 +77,7 @@ router.post("/", auth, permissionsMiddleware(true, false), async (req, res) => {
 router.put("/:id", auth, async (req, res) => {
   try {
     let user = req.user;
-    console.log("user", user);
+
     if (!user.biz && !user.isAdmin) {
       console.log(
         chalk.redBright("A non-business user attempted to create a card!")

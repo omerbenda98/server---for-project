@@ -122,7 +122,6 @@ router.put("/userInfo/:id", auth, async (req, res) => {
 
 router.delete("/deleteUser/:id", auth, async (req, res) => {
   try {
-    console.log(req.user);
     const { error } = validateObjectId(req.params.id);
     if (error) {
       return res.status(400).send(error.details[0].message);

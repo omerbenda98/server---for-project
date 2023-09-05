@@ -14,10 +14,8 @@ function validateCard(card) {
       .max(256)
       .required()
       .email({ tlds: { allow: false } }),
-    image: {
-      url: Joi.string().min(6).max(1024).allow(""),
-      alt: Joi.string().min(6).max(256).allow(""),
-    },
+
+    imageUrl: Joi.string().min(6).max(1024).allow(""),
   });
   return schema.validate(card);
 }
